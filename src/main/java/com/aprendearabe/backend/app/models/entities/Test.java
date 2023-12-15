@@ -5,16 +5,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -29,7 +32,9 @@ public class Test implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private String image;
+	@Column(columnDefinition = "MEDIUMBLOB")
+	@Lob
+	private byte[] image;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,6 +43,7 @@ public class Test implements Serializable {
 	private Lesson lesson;
 	@OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
 	private List<Question> questions;
+	@JsonIgnore
 	@OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
 	private List<Qualification> qualifications;
 	
@@ -51,7 +57,7 @@ public class Test implements Serializable {
 		this.qualifications = new ArrayList<>();
 	}
 
-	public Test(String name, String image, Lesson lesson) {
+	public Test(String name, byte[] image, Lesson lesson) {
 		this.name = name;
 		this.image = image;
 		this.lesson = lesson;
@@ -75,11 +81,11 @@ public class Test implements Serializable {
 		this.name = name;
 	}
 
-	public String getImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 

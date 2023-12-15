@@ -19,11 +19,6 @@ public class LevelService implements ICrudService<Level> {
 	public List<Level> getAll() {
 		return levelRepository.findAll();
 	}
-	
-	@Transactional(readOnly = true)
-	public Integer getCountAll() {
-		return levelRepository.findAll().size();
-	}
 
 	@Override
 	@Transactional(readOnly = true)

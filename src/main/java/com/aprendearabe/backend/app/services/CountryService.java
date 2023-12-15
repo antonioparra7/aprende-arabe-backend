@@ -1,6 +1,7 @@
 package com.aprendearabe.backend.app.services;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,21 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aprendearabe.backend.app.models.entities.Country;
 import com.aprendearabe.backend.app.models.repositories.ICountryRepository;
+import com.aprendearabe.backend.app.utils.Utils;
 
 @Service
 public class CountryService implements ICrudService<Country> {
 	@Autowired
 	private ICountryRepository countryRepository;
+	private List<String> countriesValid = new ArrayList<>(List.of("Spain","Andorra","France","Italy","Portugal","Germany"));
 	
 	@Override
 	@Transactional(readOnly = true)
 	public List<Country> getAll() {
 		return countryRepository.findAll();
-	}
-	
-	@Override
-	public Integer getCountAll() {
-		return countryRepository.findAll().size();
 	}
 
 	@Override
@@ -57,19 +55,33 @@ public class CountryService implements ICrudService<Country> {
 			Elements paisesHtml = webHtml.getElementsByClass("item_country cell small-4 medium-2 large-2");
 			for (Element element : paisesHtml) {
 				String name = element.select("p").get(1).text();
-				String code = element.getElementsByClass("mb0 bold").text();
-				String flag = element.getElementsByClass("theme-flat").attr("data-pagespeed-lazy-src")
-						.replace("64", "32");
-				if (!name.isEmpty()) {
-					flag = !flag.isEmpty() ? flag : String.format("https://flagsapi.com/%s/flat/32.png", code);
-					Country country = new Country(name,code,flag);
-					countries.add(country);
+				if(isCountryValid(name)) {
+					String code = element.getElementsByClass("mb0 bold").text();
+					String flag = element.getElementsByClass("theme-flat").attr("data-pagespeed-lazy-src")
+							.replace("64", "32");
+					if (!name.isEmpty()) {
+						flag = !flag.isEmpty() ? flag : String.format("https://flagsapi.com/%s/flat/32.png", code);
+						byte[] image = Utils.convertImg(flag);
+						if (image != null) {
+							Country country = new Country(name,code,image);
+							countries.add(country);
+						}
+					}
 				}
 			}
 		}catch(Exception e) {
 			countries = null;
 		}
 		return countries;
+	}
+	
+	public boolean isCountryValid(String country) {
+		if (countriesValid.contains(country)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	@Transactional

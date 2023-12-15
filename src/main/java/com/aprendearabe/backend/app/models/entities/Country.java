@@ -7,11 +7,13 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -23,12 +25,14 @@ public class Country implements Serializable {
 	private Long id;
 	private String name;
 	private String code;
-	private String flag;
+	@Column(columnDefinition = "MEDIUMBLOB")
+	@Lob
+    private byte[] flag;
 	@OneToMany(mappedBy = "country", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<User> users;
 	
-	public Country(String name, String code, String flag) {
+	public Country(String name, String code, byte[] flag) {
 		this.name = name;
 		this.code = code;
 		this.flag = flag;
@@ -63,11 +67,11 @@ public class Country implements Serializable {
 		this.code = code;
 	}
 
-	public String getFlag() {
+	public byte[] getFlag() {
 		return flag;
 	}
 
-	public void setFlag(String flag) {
+	public void setFlag(byte[] flag) {
 		this.flag = flag;
 	}
 

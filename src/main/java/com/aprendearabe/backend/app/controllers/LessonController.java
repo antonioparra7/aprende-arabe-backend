@@ -15,28 +15,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.aprendearabe.backend.app.models.entities.Test;
+import com.aprendearabe.backend.app.models.entities.Theme;
 import com.aprendearabe.backend.app.models.entities.Lesson;
-import com.aprendearabe.backend.app.services.TestService;
+import com.aprendearabe.backend.app.services.ThemeService;
 import com.aprendearabe.backend.app.services.LessonService;
 
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
-@RequestMapping("/api/v1/tests")
-public class TestController {
+@RequestMapping("/api/v1/lessons")
+public class LessonController {
+	@Autowired
+	private ThemeService themeService;
 	@Autowired
 	private LessonService lessonService;
-	@Autowired
-	private TestService testService;
 
 	@GetMapping("")
-	public ResponseEntity<?> getTests() {
-		List<Test> tests = null;
+	public ResponseEntity<?> getLessons() {
+		List<Lesson> lessons = null;
 		try {
-			tests = testService.getAll();
-			return new ResponseEntity<List<Test>>(tests, HttpStatus.OK);
+			lessons = lessonService.getAll();
+			return new ResponseEntity<List<Lesson>>(lessons, HttpStatus.OK);
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(
 					String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),
@@ -44,15 +43,15 @@ public class TestController {
 		}
 	}
 
-	@GetMapping("/lessonId/{id}")
-	public ResponseEntity<?> getTestsByLessonId(@PathVariable Long id) {
-		List<Test> tests = null;
+	@GetMapping("/themeId/{id}")
+	public ResponseEntity<?> getLessonsByThemeId(@PathVariable Long id) {
+		List<Lesson> lessons = null;
 		try {
-			if (testService.getById(id) != null) {
-				tests = testService.getAllByLessonId(id);
-				return new ResponseEntity<List<Test>>(tests, HttpStatus.OK);
+			if (themeService.getById(id) != null) {
+				lessons = lessonService.getAllByThemeId(id);
+				return new ResponseEntity<List<Lesson>>(lessons, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", id),
+				return new ResponseEntity<String>(String.format("Theme con id: %d no existe en base de datos", id),
 						HttpStatus.NOT_FOUND);
 			}
 		} catch (DataAccessException e) {
@@ -63,35 +62,34 @@ public class TestController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getTestById(@PathVariable Long id) {
-		Test test = null;
+	public ResponseEntity<?> getLessonById(@PathVariable Long id) {
+		Lesson lesson = null;
 		try {
-			test = testService.getById(id);
+			lesson = lessonService.getById(id);
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(
 					String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (test != null) {
-			return new ResponseEntity<Test>(test, HttpStatus.OK);
+		if (lesson != null) {
+			return new ResponseEntity<Lesson>(lesson, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<String>(String.format("Test con id: %d no existe en base de datos", id),
+			return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", id),
 					HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@PostMapping("")
-	public ResponseEntity<String> createTest(@RequestParam String name, @RequestParam MultipartFile image,
-			@RequestParam Long lessonId) throws IOException {
-		Test testAdded = null;
+	public ResponseEntity<String> createLesson(@RequestParam String name, @RequestParam Long themeId) throws IOException {
+		Lesson lessonAdded = null;
 		try {
-			Lesson lesson = lessonService.getById(lessonId);
-			if (lesson != null) {
-				Test test = new Test(name, image.getBytes(), lesson);
-				testAdded = testService.save(test);
+			Theme theme = themeService.getById(themeId);
+			if (theme != null) {
+				Lesson lesson = new Lesson(name, theme);
+				lessonAdded = lessonService.save(lesson);
 			} else {
-				return new ResponseEntity<String>(
-						String.format("Lesson con id: %d no existe en base de datos", lessonId), HttpStatus.NOT_FOUND);
+				return new ResponseEntity<String>(String.format("Theme con id: %d no existe en base de datos", themeId),
+						HttpStatus.NOT_FOUND);
 			}
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(
@@ -99,25 +97,25 @@ public class TestController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		if (testAdded != null && testAdded.getId() > 0) {
-			return new ResponseEntity<String>("Test añadido con éxito", HttpStatus.CREATED);
+		if (lessonAdded != null && lessonAdded.getId() > 0) {
+			return new ResponseEntity<String>("Lesson añadida con éxito", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<String>("Error al añadir test", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>("Error al añadir lesson", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	// Añadir metodo update
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteTest(@PathVariable Long id) {
+	public ResponseEntity<String> deleteLesson(@PathVariable Long id) {
 		try {
-			Test test = testService.getById(id);
-			if (test == null) {
-				return new ResponseEntity<String>(String.format("Test con id: %d no existe en base de datos", id),
+			Lesson lesson = lessonService.getById(id);
+			if (lesson == null) {
+				return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", id),
 						HttpStatus.NOT_FOUND);
 			}
-			testService.deleteById(id);
-			return new ResponseEntity<String>("Test eliminado con éxito", HttpStatus.OK);
+			lessonService.deleteById(id);
+			return new ResponseEntity<String>("Lesson eliminado con éxito", HttpStatus.OK);
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(
 					String.format("Error al realizar delete en base de datos: ".concat(e.getMessage())),

@@ -17,6 +17,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "qualifications")
@@ -24,6 +26,8 @@ public class Qualification implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Min(value = 0)
+	@Max(value = 10)
 	private Double score;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
@@ -31,6 +35,10 @@ public class Qualification implements Serializable {
 	@JoinColumn(name = "test_id")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Test test;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "user_id")
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private User user;
 
 	@PrePersist
 	public void prePersist() {
@@ -40,9 +48,10 @@ public class Qualification implements Serializable {
 	public Qualification() {
 	}
 
-	public Qualification(Double score, Test test) {
+	public Qualification(Double score, Test test, User user) {
 		this.score = score;
 		this.test = test;
+		this.user = user;
 	}
 
 	public Long getId() {
@@ -75,6 +84,14 @@ public class Qualification implements Serializable {
 
 	public void setTest(Test test) {
 		this.test = test;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	private static final long serialVersionUID = 1L;

@@ -1,12 +1,17 @@
 package com.aprendearabe.backend.app.models.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "tutorials")
@@ -14,10 +19,18 @@ public class Tutorial implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(unique = true)
 	private String name;
 	private String description;
 	private String link;
 	private String destinedTo;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createAt;
+
+	@PrePersist
+	public void prePersist() {
+		this.createAt = new Date();
+	}
 	
 	public Tutorial() {
 	}
@@ -69,6 +82,13 @@ public class Tutorial implements Serializable {
 		this.destinedTo = destinedTo;
 	}
 	
-	private static final long serialVersionUID = 1L;
+	public Date getCreateAt() {
+		return createAt;
+	}
 
+	public void setCreateAt(Date createAt) {
+		this.createAt = createAt;
+	}
+	
+	private static final long serialVersionUID = 1L;
 }

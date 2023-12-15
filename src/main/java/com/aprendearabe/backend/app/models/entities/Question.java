@@ -6,12 +6,14 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -30,7 +32,9 @@ public class Question implements Serializable {
 	private String response_c;
 	private String response_d;
 	private String response_correct;
-	private String image;
+	@Column(columnDefinition = "MEDIUMBLOB")
+	@Lob
+	private byte[] image;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -47,7 +51,7 @@ public class Question implements Serializable {
 	}
 
 	public Question(String question, String response_a, String response_b, String response_c, String response_d,
-			String response_correct, String image, Test test) {
+			String response_correct, byte[] image, Test test) {
 		this.question = question;
 		this.response_a = response_a;
 		this.response_b = response_b;
@@ -114,11 +118,11 @@ public class Question implements Serializable {
 		this.response_correct = response_correct;
 	}
 
-	public String getImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 

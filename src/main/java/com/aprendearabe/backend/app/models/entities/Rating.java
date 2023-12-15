@@ -1,6 +1,7 @@
 package com.aprendearabe.backend.app.models.entities;
 
 import java.io.Serializable;
+
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,6 +18,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "ratings")
@@ -24,6 +27,8 @@ public class Rating implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Min(value = 0)
+	@Max(value = 5)
 	private Integer score;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
@@ -31,6 +36,10 @@ public class Rating implements Serializable {
 	@JoinColumn(name = "lesson_id")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Lesson lesson;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "user_id")
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private User user;
 
 	@PrePersist
 	public void prePersist() {
@@ -40,9 +49,10 @@ public class Rating implements Serializable {
 	public Rating() {
 	}
 
-	public Rating(Integer score, Lesson lesson) {
+	public Rating(Integer score, Lesson lesson, User user) {
 		this.score = score;
 		this.lesson = lesson;
+		this.user = user;
 	}
 
 	public Long getId() {
@@ -75,6 +85,14 @@ public class Rating implements Serializable {
 
 	public void setLesson(Lesson lesson) {
 		this.lesson = lesson;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	private static final long serialVersionUID = 1L;

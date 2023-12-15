@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -37,8 +38,10 @@ public class Lesson implements Serializable{
 	private Theme theme;
 	@OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
 	private List<Content> contents;
+	@JsonIgnore
 	@OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
 	private List<Test> tests;
+	@JsonIgnore
 	@OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
 	private List<Rating> ratings;
 	
@@ -125,8 +128,8 @@ public class Lesson implements Serializable{
 		this.ratings = ratings;
 	}
 
-	public void addRating(Rating ratings) {
-		this.ratings.add(ratings);
+	public void addRating(Rating rating) {
+		this.ratings.add(rating);
 	}
 
 	private static final long serialVersionUID = 1L;

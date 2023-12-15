@@ -1,9 +1,6 @@
 package com.aprendearabe.backend.app.controllers;
 
 import java.io.IOException;
-
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import com.aprendearabe.backend.app.models.entities.Level;
-import com.aprendearabe.backend.app.services.LevelService;
+
+import com.aprendearabe.backend.app.models.entities.Tutorial;
+import com.aprendearabe.backend.app.services.TutorialService;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
-@RequestMapping("/api/v1/levels")
-public class LevelController {
+@RequestMapping("/api/v1/tutorials")
+public class TutorialController {
 	@Autowired
-	private LevelService levelService;
+	private TutorialService tutorialService;
 	
 	@GetMapping("")
-	public ResponseEntity<?> getLevels(){
-		List<Level> levels = null;
+	public ResponseEntity<?> getTutorials(){
+		List<Tutorial> tutorials = null;
 		try {
-			levels = levelService.getAll();
-			return new ResponseEntity<List<Level>>(levels,HttpStatus.OK);
+			tutorials = tutorialService.getAll();
+			return new ResponseEntity<List<Tutorial>>(tutorials,HttpStatus.OK);
 		}
 		catch(DataAccessException e) {
 			return new ResponseEntity<String>(String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,51 +39,51 @@ public class LevelController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getLevelById(@PathVariable Long id){
-		Level level = null;
+	public ResponseEntity<?> getTutorialById(@PathVariable Long id){
+		Tutorial tutorial = null;
 		try {
-			level = levelService.getById(id);
+			tutorial = tutorialService.getById(id);
 		}catch(DataAccessException e) {
 			return new ResponseEntity<String>(String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (level!=null) {
-			return new ResponseEntity<Level>(level,HttpStatus.OK);
+		if (tutorial!=null) {
+			return new ResponseEntity<Tutorial>(tutorial,HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<String>(String.format("Level con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>(String.format("Tutorial con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<String> createLevel(@RequestParam String name, @RequestParam MultipartFile image) throws IOException {
-		Level levelAdded = null;
+	public ResponseEntity<String> createTutorial(@RequestParam String name, @RequestParam String description, @RequestParam String link, @RequestParam String destinedTo) throws IOException {
+		Tutorial tutorialAdded = null;
 		try {
-			Level level = new Level(name, image.getBytes());
-			levelAdded = levelService.save(level);
+			Tutorial tutorial = new Tutorial(name, description, link, destinedTo);
+			tutorialAdded = tutorialService.save(tutorial);
 		}
 		catch(DataAccessException e) {
 			return new ResponseEntity<String>(String.format("Error al realizar insert en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if (levelAdded!=null && levelAdded.getId()>0) {
-			return new ResponseEntity<String>("Level añadido con éxito",HttpStatus.CREATED);
+		if (tutorialAdded!=null && tutorialAdded.getId()>0) {
+			return new ResponseEntity<String>("Tutorial añadido con éxito",HttpStatus.CREATED);
 		}
 		else {
-			return new ResponseEntity<String>("Error al añadir level",HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>("Error al añadir tutorial",HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	// Añadir metodo update
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteLevel(@PathVariable Long id) {
+	public ResponseEntity<String> deleteTutorial(@PathVariable Long id) {
 		try {
-			Level level = levelService.getById(id);
-			if(level==null) {
-				return new ResponseEntity<String>(String.format("Level con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
+			Tutorial tutorial = tutorialService.getById(id);
+			if(tutorial==null) {
+				return new ResponseEntity<String>(String.format("Tutorial con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
 			}
-			levelService.deleteById(id);
-			return new ResponseEntity<String>("Level eliminado con éxito",HttpStatus.OK);
+			tutorialService.deleteById(id);
+			return new ResponseEntity<String>("Tutorial eliminado con éxito",HttpStatus.OK);
 		}
 		catch(DataAccessException e) {
 			return new ResponseEntity<String>(String.format("Error al realizar delete en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);

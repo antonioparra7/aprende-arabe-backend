@@ -1,9 +1,6 @@
 package com.aprendearabe.backend.app.services;
 
 import java.util.List;
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +19,9 @@ public class ThemeService implements ICrudService<Theme> {
 		return themeRepository.findAll();
 	}
 	
-	@Override
 	@Transactional(readOnly = true)
-	public Integer getCountAll() {
-		return themeRepository.findAll().size();
+	public List<Theme> getAllByLevelId(Long id){
+		return themeRepository.findAllByLevelId(id);
 	}
 
 	@Override

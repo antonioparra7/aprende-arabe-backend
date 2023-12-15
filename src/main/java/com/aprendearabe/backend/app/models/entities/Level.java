@@ -1,17 +1,23 @@
 package com.aprendearabe.backend.app.models.entities;
 
+
 import java.io.Serializable;
+
 
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -24,10 +30,14 @@ public class Level implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(unique = true)
 	private String name;
-	private String image;
+	@Column(columnDefinition = "MEDIUMBLOB")
+	@Lob
+    private byte[] image;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
+	@JsonIgnore
 	@OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
 	private List<Theme> themes;
 	
@@ -40,10 +50,9 @@ public class Level implements Serializable {
 		this.themes = new ArrayList<>();
 	}
 
-	public Level(String name, String image) {
+	public Level(String name, byte[] image) {
 		this.name = name;
 		this.image = image;
-		this.themes = new ArrayList<>();
 	}
 
 	public Long getId() {
@@ -62,11 +71,11 @@ public class Level implements Serializable {
 		this.name = name;
 	}
 
-	public String getImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 

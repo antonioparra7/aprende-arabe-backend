@@ -7,12 +7,14 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -27,7 +29,9 @@ public class Content implements Serializable {
 	private Long id;
 	private String word;
 	private String wordTranslate;
-	private String image;
+	@Column(columnDefinition = "MEDIUMBLOB")
+	@Lob
+	private byte[] image;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,10 +45,9 @@ public class Content implements Serializable {
 	}
 	
 	public Content() {
-	}
-	
+	}	
 
-	public Content(String word, String wordTranslate, String image, Lesson lesson) {
+	public Content(String word, String wordTranslate, byte[] image, Lesson lesson) {
 		this.word = word;
 		this.wordTranslate = wordTranslate;
 		this.image = image;
@@ -82,19 +85,18 @@ public class Content implements Serializable {
 	}
 
 
-	public String getImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
 
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 
 	public Lesson getLesson() {
 		return lesson;
 	}
-
 
 	public void setLesson(Lesson lesson) {
 		this.lesson = lesson;
