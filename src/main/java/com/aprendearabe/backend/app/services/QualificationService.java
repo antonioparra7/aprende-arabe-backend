@@ -30,6 +30,11 @@ public class QualificationService implements ICrudService<Qualification> {
 	public List<Qualification> getAllByUserId(Long id){
 		return qualificationRepository.findAllByUserId(id);
 	}
+	
+	@Transactional(readOnly = true)
+	public Qualification getByTestIdAndUserId(Long testId, Long userId){
+		return qualificationRepository.findByTestIdAndUserId(testId, userId).orElse(null);
+	}
 
 	@Override
 	@Transactional(readOnly = true)

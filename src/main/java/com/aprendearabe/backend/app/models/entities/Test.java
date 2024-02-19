@@ -41,6 +41,7 @@ public class Test implements Serializable {
 	@JoinColumn(name = "lesson_id")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Lesson lesson;
+	@JsonIgnore
 	@OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
 	private List<Question> questions;
 	@JsonIgnore

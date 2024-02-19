@@ -59,7 +59,7 @@ public class UserController {
 				return new ResponseEntity<Long>(levelId,HttpStatus.OK);
 			}
 			else {
-				return new ResponseEntity<String>("El usuario no ha seleccionado ningún nivel",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<String>("El usuario no ha seleccionado ningún nivel",HttpStatus.NO_CONTENT);
 			}
 			
 		}

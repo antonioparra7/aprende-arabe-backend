@@ -2,6 +2,7 @@ package com.aprendearabe.backend.app.controllers;
 
 
 import java.io.IOException;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,24 @@ public class ContentController {
 		}
 		catch(DataAccessException e) {
 			return new ResponseEntity<String>(String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/lessonId/{id}")
+	public ResponseEntity<?> getContentsByLessonId(@PathVariable Long id) {
+		List<Content> contents = null;
+		try {
+			if (lessonService.getById(id) != null) {
+				contents = contentService.getAllByLessonId(id);
+				return new ResponseEntity<List<Content>>(contents, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", id),
+						HttpStatus.NOT_FOUND);
+			}
+		} catch (DataAccessException e) {
+			return new ResponseEntity<String>(
+					String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	

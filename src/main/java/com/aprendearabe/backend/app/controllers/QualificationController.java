@@ -2,6 +2,7 @@ package com.aprendearabe.backend.app.controllers;
 
 import java.io.IOException;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,24 @@ public class QualificationController {
 				return new ResponseEntity<List<Qualification>>(qualifications, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos", id),
+						HttpStatus.NOT_FOUND);
+			}
+		} catch (DataAccessException e) {
+			return new ResponseEntity<String>(
+					String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("testId/{testId}/userId/{userId}")
+	public ResponseEntity<?> getQualificationByLessonIdAndUserId(@PathVariable Long testId, @PathVariable Long userId) {
+		Qualification qualification = null;
+		try {
+			if (testService.getById(testId)!=null && userService.getById(userId)!=null) {
+				qualification = qualificationService.getByTestIdAndUserId(testId, userId);
+				return new ResponseEntity<Qualification>(qualification, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>(String.format("Rating con testId: %d y con userId: %d no existe en base de datos", testId, userId),
 						HttpStatus.NOT_FOUND);
 			}
 		} catch (DataAccessException e) {

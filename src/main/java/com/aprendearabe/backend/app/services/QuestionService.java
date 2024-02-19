@@ -19,6 +19,11 @@ public class QuestionService implements ICrudService<Question> {
 	public List<Question> getAll() {
 		return questionRepository.findAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public List<Question> getAllByTestId(Long id) {
+		return questionRepository.findAllByTestId(id);
+	}
 
 	@Override
 	@Transactional(readOnly = true)

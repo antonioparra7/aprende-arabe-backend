@@ -27,11 +27,11 @@ public class Question implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String question;
-	private String response_a;
-	private String response_b;
-	private String response_c;
-	private String response_d;
-	private String response_correct;
+	private String responseA;
+	private String responseB;
+	private String responseC;
+	private String responseD;
+	private String responseCorrect;
 	@Column(columnDefinition = "MEDIUMBLOB")
 	@Lob
 	private byte[] image;
@@ -50,14 +50,14 @@ public class Question implements Serializable {
 	public Question() {
 	}
 
-	public Question(String question, String response_a, String response_b, String response_c, String response_d,
-			String response_correct, byte[] image, Test test) {
+	public Question(String question, String responseA, String responseB, String responseC, String responseD,
+			String responseCorrect, byte[] image, Test test) {
 		this.question = question;
-		this.response_a = response_a;
-		this.response_b = response_b;
-		this.response_c = response_c;
-		this.response_d = response_d;
-		this.response_correct = response_correct;
+		this.responseA = responseA;
+		this.responseB = responseB;
+		this.responseC = responseC;
+		this.responseD = responseD;
+		this.responseCorrect = responseCorrect;
 		this.image = image;
 		this.test = test;
 	}
@@ -78,44 +78,44 @@ public class Question implements Serializable {
 		this.question = question;
 	}
 
-	public String getResponse_a() {
-		return response_a;
+	public String getResponseA() {
+		return responseA;
 	}
 
-	public void setResponse_a(String response_a) {
-		this.response_a = response_a;
+	public void setResponseA(String responseA) {
+		this.responseA = responseA;
 	}
 
-	public String getResponse_b() {
-		return response_b;
+	public String getResponseB() {
+		return responseB;
 	}
 
-	public void setResponse_b(String response_b) {
-		this.response_b = response_b;
+	public void setResponseB(String responseB) {
+		this.responseB = responseB;
 	}
 
-	public String getResponse_c() {
-		return response_c;
+	public String getResponseC() {
+		return responseC;
 	}
 
-	public void setResponse_c(String response_c) {
-		this.response_c = response_c;
+	public void setResponseC(String responseC) {
+		this.responseC = responseC;
 	}
 
-	public String getResponse_d() {
-		return response_d;
+	public String getResponseD() {
+		return responseD;
 	}
 
-	public void setResponse_d(String response_d) {
-		this.response_d = response_d;
+	public void setResponseD(String responseD) {
+		this.responseD = responseD;
 	}
 
-	public String getResponse_correct() {
-		return response_correct;
+	public String getResponseCorrect() {
+		return responseCorrect;
 	}
 
-	public void setResponse_correct(String response_correct) {
-		this.response_correct = response_correct;
+	public void setResponseCorrect(String responseCorrect) {
+		this.responseCorrect = responseCorrect;
 	}
 
 	public byte[] getImage() {

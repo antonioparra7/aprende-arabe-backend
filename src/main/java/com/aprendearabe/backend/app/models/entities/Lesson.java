@@ -36,6 +36,7 @@ public class Lesson implements Serializable{
 	@JoinColumn(name = "theme_id")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Theme theme;
+	@JsonIgnore
 	@OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
 	private List<Content> contents;
 	@JsonIgnore

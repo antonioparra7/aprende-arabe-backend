@@ -19,6 +19,11 @@ public class ContentService implements ICrudService<Content> {
 	public List<Content> getAll() {
 		return contentRepository.findAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public List<Content> getAllByLessonId(Long id) {
+		return contentRepository.findAllByLessonId(id);
+	}
 
 	@Override
 	@Transactional(readOnly = true)

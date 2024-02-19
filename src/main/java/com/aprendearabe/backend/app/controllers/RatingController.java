@@ -84,6 +84,24 @@ public class RatingController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("lessonId/{lessonId}/userId/{userId}")
+	public ResponseEntity<?> getRatingByLessonIdAndUserId(@PathVariable Long lessonId, @PathVariable Long userId) {
+		Rating rating = null;
+		try {
+			if (lessonService.getById(lessonId)!=null && userService.getById(userId)!=null) {
+				rating = ratingService.getByLessonIdAndUserId(lessonId, userId);
+				return new ResponseEntity<Rating>(rating, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>(String.format("Rating con lessonId: %d y con userId: %d no existe en base de datos", lessonId, userId),
+						HttpStatus.NOT_FOUND);
+			}
+		} catch (DataAccessException e) {
+			return new ResponseEntity<String>(
+					String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getRatingById(@PathVariable Long id) {
