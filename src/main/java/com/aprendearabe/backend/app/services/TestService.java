@@ -22,8 +22,8 @@ public class TestService implements ICrudService<Test> {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<Test> getAllByLessonId(Long id){
-		return testRepository.findAllByLessonId(id);
+	public List<Test> getAllByLevelId(Long id){
+		return testRepository.findAllByLevelId(id);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.aprendearabe.backend.app.controllers;
 
 import java.io.IOException;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aprendearabe.backend.app.models.entities.Test;
-import com.aprendearabe.backend.app.models.entities.Lesson;
+import com.aprendearabe.backend.app.models.entities.Level;
 import com.aprendearabe.backend.app.services.TestService;
-import com.aprendearabe.backend.app.services.LessonService;
+import com.aprendearabe.backend.app.services.LevelService;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping("/api/v1/tests")
 public class TestController {
 	@Autowired
-	private LessonService lessonService;
+	private LevelService levelService;
 	@Autowired
 	private TestService testService;
 
@@ -44,15 +45,15 @@ public class TestController {
 		}
 	}
 
-	@GetMapping("/lessonId/{id}")
-	public ResponseEntity<?> getTestsByLessonId(@PathVariable Long id) {
+	@GetMapping("/levelId/{id}")
+	public ResponseEntity<?> getTestsByLevelId(@PathVariable Long id) {
 		List<Test> tests = null;
 		try {
 			if (testService.getById(id) != null) {
-				tests = testService.getAllByLessonId(id);
+				tests = testService.getAllByLevelId(id);
 				return new ResponseEntity<List<Test>>(tests, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", id),
+				return new ResponseEntity<String>(String.format("Level con id: %d no existe en base de datos", id),
 						HttpStatus.NOT_FOUND);
 			}
 		} catch (DataAccessException e) {
@@ -82,16 +83,16 @@ public class TestController {
 
 	@PostMapping("")
 	public ResponseEntity<String> createTest(@RequestParam String name, @RequestParam MultipartFile image,
-			@RequestParam Long lessonId) throws IOException {
+			@RequestParam Long levelId) throws IOException {
 		Test testAdded = null;
 		try {
-			Lesson lesson = lessonService.getById(lessonId);
-			if (lesson != null) {
-				Test test = new Test(name, image.getBytes(), lesson);
+			Level level = levelService.getById(levelId);
+			if (level != null) {
+				Test test = new Test(name, level);
 				testAdded = testService.save(test);
 			} else {
 				return new ResponseEntity<String>(
-						String.format("Lesson con id: %d no existe en base de datos", lessonId), HttpStatus.NOT_FOUND);
+						String.format("Level con id: %d no existe en base de datos", levelId), HttpStatus.NOT_FOUND);
 			}
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(

@@ -40,6 +40,9 @@ public class Level implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
 	private List<Theme> themes;
+	@JsonIgnore
+	@OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
+	private List<Test> tests;
 	
 	@PrePersist
 	public void prePersist() {
@@ -48,11 +51,14 @@ public class Level implements Serializable {
 	
 	public Level() {
 		this.themes = new ArrayList<>();
+		this.tests = new ArrayList<>();
 	}
 
 	public Level(String name, byte[] image) {
 		this.name = name;
 		this.image = image;
+		this.themes = new ArrayList<>();
+		this.tests = new ArrayList<>();
 	}
 
 	public Long getId() {
@@ -98,6 +104,17 @@ public class Level implements Serializable {
 	public void addTheme(Theme theme) {
 		this.themes.add(theme);
 	}
+	
+	public List<Test> getTests() {
+		return tests;
+	}
 
+	public void setTests(List<Test> tests) {
+		this.tests = tests;
+	}
+	
+	public void addTest(Test test) {
+		this.tests.add(test);
+	}
 	private static final long serialVersionUID = 1L;
 }

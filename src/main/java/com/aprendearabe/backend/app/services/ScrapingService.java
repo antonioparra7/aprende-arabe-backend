@@ -27,10 +27,8 @@ public class ScrapingService {
 	private ContentService contentService;
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final String urlImg = "https://www.goethe-verlag.com/book2/";
 
 	public void insertThemes() {
-		String urlLessonPre = "https://www.goethe-verlag.com/book2/_VOCAB/ES/ESAR/";
 		try {
 			Level level = levelService.getById(1L);
 			Document webHtml = Jsoup.connect("https://www.goethe-verlag.com/book2/_VOCAB/ES/ESAR/ESAR.HTM").get();
@@ -38,14 +36,14 @@ public class ScrapingService {
 			for (Element themeHtml : themesHtml) {
 				String name = themeHtml.getElementsByClass("Stil36").text();
 				if (name != null && !name.isEmpty()) {
-					String imgSrc = themeHtml.select("img").first().attr("src").replace("../", "");
-					byte[] image = Utils.convertImg(urlImg + imgSrc);
+					String imgSrc = themeHtml.select("img").first().attr("src");
+					byte[] image = Utils.convertImg(imgSrc);
 					if (image != null) {
 						Theme theme = new Theme(name, image, level);
 						Theme themeSaved = themeService.save(theme);
 						if (themeSaved != null) {
 							String urlLesson = themeHtml.select("a").first().attr("href");
-							insertLessons(urlLessonPre + urlLesson, themeSaved);
+							insertLessons(urlLesson, themeSaved);
 						}
 					}
 				}
@@ -59,23 +57,22 @@ public class ScrapingService {
 	private void insertLessons(String url, Theme theme) {
 		try {
 			Document webHtml = Jsoup.connect(url).get();
-			String lessonName = webHtml.getElementsByClass("Stil90").text();
 			Integer count = -1;
 			Integer numberActualLesson = 1;
 			Lesson actualLesson = null;
 			Elements lessonsHtml = webHtml.getElementsByClass("col-sm-3");
 			for (Element lessonHtml : lessonsHtml) {
 				if (count == -1 || count == 10) {
-					actualLesson = lessonService.save(new Lesson(lessonName + " " + numberActualLesson, theme));
+					actualLesson = lessonService.save(new Lesson(theme.getName() + " " + numberActualLesson, theme));
 					count = 0;
 					numberActualLesson++;
 				}
 				String word = lessonHtml.getElementsByClass("Stil36").text().replaceAll("(?i)(la|el)\\s+","").trim();
 				word = word.substring(0,1).toUpperCase()+word.substring(1);
 				String word_translate = lessonHtml.getElementsByClass("Stil46").text();
-				String imgSrc = lessonHtml.select("img").first().attr("src").replace("../", "");
+				String imgSrc = lessonHtml.select("img").first().attr("src");
 				;
-				byte[] image = Utils.convertImg(urlImg + imgSrc);
+				byte[] image = Utils.convertImg(imgSrc);
 				if (image != null) {
 					Content content = new Content(word, word_translate, image, actualLesson);
 					contentService.save(content);
@@ -86,9 +83,5 @@ public class ScrapingService {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-
 	}
-
-	
-
 }

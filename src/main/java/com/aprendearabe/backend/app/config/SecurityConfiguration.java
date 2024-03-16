@@ -28,7 +28,7 @@ public class SecurityConfiguration {
 		http.csrf().disable().authorizeHttpRequests()
 				.requestMatchers("/api/v1/auth/**", "/api/v1/users/**" ,
 						"/api/v1/dashboard/**", "/api/v1/countries/**", "/api/v1/parameters/**",
-						"/api/v1/translator/**", "/api/v1/scraping/**", "/api/v1/tutorials/**",
+						"/api/v1/translator/**", "/api/v1/scraping/**", "/api/v1/testGenerator/**", "/api/v1/tutorials/**",
 						"/api/v1/levels/**","/api/v1/themes/**", "/api/v1/lessons/**", "/api/v1/contents/**"
 						,"/api/v1/tests/**","/api/v1/questions/**", "/api/v1/ratings/**", "/api/v1/qualifications/**")
 				.permitAll()

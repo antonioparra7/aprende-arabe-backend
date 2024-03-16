@@ -41,9 +41,6 @@ public class Lesson implements Serializable{
 	private List<Content> contents;
 	@JsonIgnore
 	@OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
-	private List<Test> tests;
-	@JsonIgnore
-	@OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
 	private List<Rating> ratings;
 	
 	@PrePersist
@@ -53,7 +50,6 @@ public class Lesson implements Serializable{
 	
 	public Lesson() {
 		this.contents = new ArrayList<>();
-		this.tests = new ArrayList<>();
 		this.ratings = new ArrayList<>();
 	}
 
@@ -61,7 +57,6 @@ public class Lesson implements Serializable{
 		this.name = name;
 		this.theme = theme;
 		this.contents = new ArrayList<>();
-		this.tests = new ArrayList<>();
 		this.ratings = new ArrayList<>();
 	}
 
@@ -107,18 +102,6 @@ public class Lesson implements Serializable{
 	
 	public void addContent(Content content) {
 		this.contents.add(content);
-	}
-
-	public List<Test> getTests() {
-		return tests;
-	}
-
-	public void setTests(List<Test> tests) {
-		this.tests = tests;
-	}
-	
-	public void addTest(Test test) {
-		this.tests.add(test);
 	}
 	
 	public List<Rating> getRatings() {

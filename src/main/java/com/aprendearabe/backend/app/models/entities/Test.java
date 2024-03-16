@@ -1,6 +1,7 @@
 package com.aprendearabe.backend.app.models.entities;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,14 +11,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -32,15 +31,12 @@ public class Test implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	@Column(columnDefinition = "MEDIUMBLOB")
-	@Lob
-	private byte[] image;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "lesson_id")
+	@JoinColumn(name = "level_id")
 	@JsonProperty(access = Access.WRITE_ONLY)
-	private Lesson lesson;
+	private Level level;
 	@JsonIgnore
 	@OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
 	private List<Question> questions;
@@ -58,10 +54,9 @@ public class Test implements Serializable {
 		this.qualifications = new ArrayList<>();
 	}
 
-	public Test(String name, byte[] image, Lesson lesson) {
+	public Test(String name, Level level) {
 		this.name = name;
-		this.image = image;
-		this.lesson = lesson;
+		this.level = level;
 		this.questions = new ArrayList<>();
 		this.qualifications = new ArrayList<>();
 	}
@@ -82,14 +77,6 @@ public class Test implements Serializable {
 		this.name = name;
 	}
 
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-
 	public Date getCreateAt() {
 		return createAt;
 	}
@@ -98,12 +85,12 @@ public class Test implements Serializable {
 		this.createAt = createAt;
 	}
 
-	public Lesson getLesson() {
-		return lesson;
+	public Level getLevel() {
+		return level;
 	}
 
-	public void setLesson(Lesson lesson) {
-		this.lesson = lesson;
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 
 	public List<Question> getQuestions() {
