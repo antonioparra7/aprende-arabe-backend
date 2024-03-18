@@ -126,33 +126,40 @@ public class RatingController {
 			@RequestParam Long userId) throws IOException {
 		Rating ratingAdded = null;
 		try {
-			Lesson lesson = lessonService.getById(lessonId);
-			User user = userService.getById(userId);
-			if (lesson != null && user != null) {
-				Rating ratingExist = ratingService.getByLessonIdAndUserId(lessonId,userId);
-				if(ratingExist!=null) {
-					ratingExist.setScore(score);
-					ratingAdded = ratingService.save(ratingExist);
-				}
+			if (ratingService.getByLessonIdAndUserId(lessonId, userId)==null) {
+				Lesson lesson = lessonService.getById(lessonId);
+				User user = userService.getById(userId);
+				if (lesson != null && user != null) {
+					Rating ratingExist = ratingService.getByLessonIdAndUserId(lessonId,userId);
+					if(ratingExist!=null) {
+						ratingExist.setScore(score);
+						ratingAdded = ratingService.save(ratingExist);
+					}
+					else {
+						Rating rating = new Rating(score, lesson, user);
+						ratingAdded = ratingService.save(rating);
+					}
+				} 
 				else {
-					Rating rating = new Rating(score, lesson, user);
-					ratingAdded = ratingService.save(rating);
-				}
-			} 
-			else {
-				if(lesson==null && user==null) {
-					return new ResponseEntity<String>(String.format("Lesson con id: %d y User con id: %d no existen en base de datos", lessonId, userId),
-							HttpStatus.NOT_FOUND);
-				}
-				else if(lesson ==null) {
-					return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", lessonId),
-							HttpStatus.NOT_FOUND);
-				}
-				else {
-					return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos", userId),
-							HttpStatus.NOT_FOUND);
+					if(lesson==null && user==null) {
+						return new ResponseEntity<String>(String.format("Lesson con id: %d y User con id: %d no existen en base de datos", lessonId, userId),
+								HttpStatus.NOT_FOUND);
+					}
+					else if(lesson ==null) {
+						return new ResponseEntity<String>(String.format("Lesson con id: %d no existe en base de datos", lessonId),
+								HttpStatus.NOT_FOUND);
+					}
+					else {
+						return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos", userId),
+								HttpStatus.NOT_FOUND);
+					}
 				}
 			}
+			else {
+				return new ResponseEntity<String>(String.format("Rating existente en base de datos"),
+						HttpStatus.CONFLICT);
+			}
+			
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(
 					String.format("Error al realizar insert en base de datos: ".concat(e.getMessage())),

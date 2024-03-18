@@ -88,7 +88,7 @@ public class QualificationController {
 	}
 	
 	@GetMapping("testId/{testId}/userId/{userId}")
-	public ResponseEntity<?> getQualificationByLessonIdAndUserId(@PathVariable Long testId, @PathVariable Long userId) {
+	public ResponseEntity<?> getQualificationByTestIdAndUserId(@PathVariable Long testId, @PathVariable Long userId) {
 		Qualification qualification = null;
 		try {
 			if (testService.getById(testId)!=null && userService.getById(userId)!=null) {
@@ -128,25 +128,31 @@ public class QualificationController {
 			@RequestParam Long userId) throws IOException {
 		Qualification qualificationAdded = null;
 		try {
-			Test test = testService.getById(testId);
-			User user = userService.getById(userId);
-			if (test != null && user != null) {
-				Qualification qualification = new Qualification(score, test, user);
-				qualificationAdded = qualificationService.save(qualification);
-			} 
-			else {
-				if(test==null && user==null) {
-					return new ResponseEntity<String>(String.format("Test con id: %d y User con id: %d no existen en base de datos", testId, userId),
-							HttpStatus.NOT_FOUND);
-				}
-				else if(test ==null) {
-					return new ResponseEntity<String>(String.format("Test con id: %d no existe en base de datos", testId),
-							HttpStatus.NOT_FOUND);
-				}
+			if (qualificationService.getByTestIdAndUserId(testId, userId)==null) {
+				Test test = testService.getById(testId);
+				User user = userService.getById(userId);
+				if (test != null && user != null) {
+					Qualification qualification = new Qualification(score, test, user);
+					qualificationAdded = qualificationService.save(qualification);
+				} 
 				else {
-					return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos", userId),
-							HttpStatus.NOT_FOUND);
+					if(test==null && user==null) {
+						return new ResponseEntity<String>(String.format("Test con id: %d y User con id: %d no existen en base de datos", testId, userId),
+								HttpStatus.NOT_FOUND);
+					}
+					else if(test ==null) {
+						return new ResponseEntity<String>(String.format("Test con id: %d no existe en base de datos", testId),
+								HttpStatus.NOT_FOUND);
+					}
+					else {
+						return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos", userId),
+								HttpStatus.NOT_FOUND);
+					}
 				}
+			}
+			else {
+				return new ResponseEntity<String>(String.format("Qualification existente en base de datos"),
+						HttpStatus.CONFLICT);
 			}
 		} catch (DataAccessException e) {
 			return new ResponseEntity<String>(
