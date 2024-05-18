@@ -14,7 +14,7 @@ import com.aprendearabe.backend.app.auth.jwt.JwtService;
 import com.aprendearabe.backend.app.models.entities.User;
 import com.aprendearabe.backend.app.services.UserService;
 
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api/v1/dashboard")
 public class DashboardController {
@@ -49,7 +49,5 @@ public class DashboardController {
 					String.format("Se ha producido un error: ".concat(e.getMessage())),
 					HttpStatus.NOT_FOUND);
 		}
-
 	}
-
 }

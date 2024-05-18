@@ -34,21 +34,22 @@ public class ScrapingService {
 			Document webHtml = Jsoup.connect("https://www.goethe-verlag.com/book2/_VOCAB/ES/ESAR/ESAR.HTM").get();
 			Elements themesHtml = webHtml.getElementsByClass("col-sm-3");
 			for (Element themeHtml : themesHtml) {
-				String name = themeHtml.getElementsByClass("Stil36").text();
-				if (name != null && !name.isEmpty()) {
-					String imgSrc = themeHtml.select("img").first().attr("src");
-					byte[] image = Utils.convertImg(imgSrc);
-					if (image != null) {
-						Theme theme = new Theme(name, image, level);
-						Theme themeSaved = themeService.save(theme);
-						if (themeSaved != null) {
-							String urlLesson = themeHtml.select("a").first().attr("href");
-							insertLessons(urlLesson, themeSaved);
+				String name = themeHtml.getElementsByClass("Stil36 h5").text();
+				if (themeService.getByName(name) == null) {
+					if (name != null && !name.isEmpty()) {
+						String imgSrc = themeHtml.select("img").first().attr("src");
+						byte[] image = Utils.convertImg("https://www.goethe-verlag.com" + imgSrc);
+						if (image != null) {
+							Theme theme = new Theme(name, image, level);
+							Theme themeSaved = themeService.save(theme);
+							if (themeSaved != null) {
+								String urlLesson = themeHtml.select("a").first().attr("href");
+								insertLessons(urlLesson, themeSaved);
+							}
 						}
 					}
 				}
 			}
-			log.info("Tematicas insertadas correctamente");
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -67,19 +68,17 @@ public class ScrapingService {
 					count = 0;
 					numberActualLesson++;
 				}
-				String word = lessonHtml.getElementsByClass("Stil36").text().replaceAll("(?i)(la|el)\\s+","").trim();
-				word = word.substring(0,1).toUpperCase()+word.substring(1);
-				String word_translate = lessonHtml.getElementsByClass("Stil46").text();
+				String word = lessonHtml.getElementsByClass("h5 Stil36").text().replaceAll("(?i)(la|el)\\s+", "").trim();
+				word = word.substring(0, 1).toUpperCase() + word.substring(1);
+				String word_translate = lessonHtml.getElementsByClass("Stil46 h4").text();
 				String imgSrc = lessonHtml.select("img").first().attr("src");
-				;
-				byte[] image = Utils.convertImg(imgSrc);
+				byte[] image = Utils.convertImg("https://www.goethe-verlag.com"+imgSrc);
 				if (image != null) {
 					Content content = new Content(word, word_translate, image, actualLesson);
 					contentService.save(content);
 				}
 				count++;
 			}
-			log.info("Lecciones insertadas correctamente");
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

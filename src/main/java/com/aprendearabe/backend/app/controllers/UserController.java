@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,6 +30,22 @@ public class UserController {
 	@Autowired
 	private LevelService levelService;
 	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getUserById(@PathVariable Long id){
+		User user = null;
+		try {
+			user = userService.getById(id);
+		}catch(DataAccessException e) {
+			return new ResponseEntity<String>(String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if (user!=null) {
+			return new ResponseEntity<User>(user,HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
+		}
+	}
+	
 	@GetMapping("/username/{username}")
 	public ResponseEntity<?> getUserByUsername(@PathVariable String username){
 		User user = null;
@@ -45,7 +62,23 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/email/{email}")
+	public ResponseEntity<?> getUserByEmail(@PathVariable String email){
+		User user = null;
+		try {
+			user = userService.getByEmail(email);
+		}catch(DataAccessException e) {
+			return new ResponseEntity<String>(String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if (user!=null) {
+			return new ResponseEntity<User>(user,HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>(String.format("User con email: %s no existe en base de datos",email),HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/levelId/{id}")
 	public ResponseEntity<?> getLevelId(@PathVariable Long id){
 		User user = null;
 		try {
@@ -65,22 +98,6 @@ public class UserController {
 		}
 		else {
 			return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@GetMapping("/email/{email}")
-	public ResponseEntity<?> getUserByEmail(@PathVariable String email){
-		User user = null;
-		try {
-			user = userService.getByEmail(email);
-		}catch(DataAccessException e) {
-			return new ResponseEntity<String>(String.format("Error al realizar consulta en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		if (user!=null) {
-			return new ResponseEntity<User>(user,HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<String>(String.format("User con email: %s no existe en base de datos",email),HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -110,6 +127,21 @@ public class UserController {
 			return new ResponseEntity<String>(String.format("Ha ocurrido un error: %s",e.getMessage()),HttpStatus.NOT_FOUND);
 		}
 		
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+		try {
+			User user = userService.getById(id);
+			if(user==null) {
+				return new ResponseEntity<String>(String.format("User con id: %d no existe en base de datos",id),HttpStatus.NOT_FOUND);
+			}
+			userService.deleteById(id);
+			return new ResponseEntity<String>("User eliminado con éxito",HttpStatus.OK);
+		}
+		catch(DataAccessException e) {
+			return new ResponseEntity<String>(String.format("Error al realizar delete en base de datos: ".concat(e.getMessage())),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 }

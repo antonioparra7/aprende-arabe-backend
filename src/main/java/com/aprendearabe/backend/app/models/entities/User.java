@@ -67,6 +67,7 @@ public class User implements UserDetails {
 	@NotEmpty
 	@Size(min = 9,max=9)
 	@Pattern(regexp = "^[0-9]*$")
+	@Column(unique = true)
 	private String phone;
 	@NotEmpty
 	@Size(min=4, max=15)

@@ -107,8 +107,6 @@ public class TestController {
 		}
 	}
 
-	// Añadir metodo update
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteTest(@PathVariable Long id) {
 		try {

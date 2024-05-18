@@ -103,8 +103,6 @@ public class QuestionController {
 		}
 	}
 	
-	// Añadir metodo update
-	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteQuestion(@PathVariable Long id) {
 		try {

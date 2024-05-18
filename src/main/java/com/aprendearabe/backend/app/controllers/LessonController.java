@@ -104,8 +104,6 @@ public class LessonController {
 		}
 	}
 
-	// Añadir metodo update
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteLesson(@PathVariable Long id) {
 		try {

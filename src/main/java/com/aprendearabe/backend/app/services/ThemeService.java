@@ -23,6 +23,11 @@ public class ThemeService implements ICrudService<Theme> {
 	public List<Theme> getAllByLevelId(Long id){
 		return themeRepository.findAllByLevelId(id);
 	}
+	
+	@Transactional(readOnly = true)
+	public Theme getByName(String name){
+		return themeRepository.findByName(name).orElse(null);
+	}
 
 	@Override
 	@Transactional(readOnly = true)

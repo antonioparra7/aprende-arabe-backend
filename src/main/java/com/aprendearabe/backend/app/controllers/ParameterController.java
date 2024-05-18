@@ -1,9 +1,12 @@
 package com.aprendearabe.backend.app.controllers;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +23,33 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aprendearabe.backend.app.models.entities.Parameter;
 import com.aprendearabe.backend.app.services.ParameterService;
 
+import jakarta.annotation.PostConstruct;
+
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping("/api/v1/parameters")
 public class ParameterController {
 	@Autowired
 	private ParameterService parameterService;
+	
+	@PostConstruct
+	public void init() throws IOException {
+		if(parameterService.getById(1L)==null) {
+			Parameter parameterImageDefault = new Parameter();
+			parameterImageDefault.setName("IMAGE DEFAULT");
+			Resource resource = new ClassPathResource("static/img/profile-default.png");
+			byte[] imageDefaultBytes = Files.readAllBytes(resource.getFile().toPath());
+			parameterImageDefault.setImage(imageDefaultBytes);
+			parameterService.save(parameterImageDefault);
+			Parameter parameterTranslator = new Parameter();
+			parameterTranslator.setName("Rapid Translate Multi Traduction");
+			parameterTranslator.setProvider("Rapid API");
+			parameterTranslator.setEndpoint("https://rapid-translate-multi-traduction.p.rapidapi.com/t");
+			parameterTranslator.setHost("rapid-translate-multi-traduction.p.rapidapi.com");
+			parameterTranslator.setKeyEndpoint("46a527eef7msh239b1de442c47aep1f1061jsn165c4acd6a7e");
+			parameterService.save(parameterTranslator);
+		}
+	}
 
 	@GetMapping("")
 	public ResponseEntity<?> getParameters() {
@@ -81,8 +105,6 @@ public class ParameterController {
 			return new ResponseEntity<String>("Error al añadir parameter", HttpStatus.NOT_FOUND);
 		}
 	}
-
-	// Añadir metodo update
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteParameter(@PathVariable Long id) {

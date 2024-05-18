@@ -40,8 +40,7 @@ public class AuthenticationController {
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(String.format("Se ha producido un error: ".concat(e.getMessage())),HttpStatus.NOT_FOUND);
-		}
-		
+		}	
 	}
 	
 	@PostMapping("/authenticate")

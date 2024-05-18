@@ -176,9 +176,7 @@ public class RatingController {
 			return new ResponseEntity<String>("Error al añadir rating", HttpStatus.NOT_FOUND);
 		}
 	}
-
-	// Añadir metodo update
-
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteRating(@PathVariable Long id) {
 		try {

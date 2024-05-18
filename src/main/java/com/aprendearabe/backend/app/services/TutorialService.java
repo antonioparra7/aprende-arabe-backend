@@ -25,6 +25,12 @@ public class TutorialService implements ICrudService<Tutorial> {
 	public Tutorial getById(Long id) {
 		return tutorialRepository.findById(id).orElse(null);
 	}
+	
+	@Transactional(readOnly = true)
+	public Tutorial getByLink(String link) {
+		return tutorialRepository.findByLink(link).orElse(null);
+	}
+	
 
 	@Override
 	@Transactional

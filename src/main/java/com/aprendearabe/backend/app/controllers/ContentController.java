@@ -104,8 +104,6 @@ public class ContentController {
 		}
 	}
 	
-	// Añadir metodo update
-	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteContent(@PathVariable Long id) {
 		try {

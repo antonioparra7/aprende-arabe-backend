@@ -107,8 +107,6 @@ public class ThemeController {
 		}
 	}
 
-	// Añadir metodo update
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteTheme(@PathVariable Long id) {
 		try {
