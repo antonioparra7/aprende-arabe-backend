@@ -36,13 +36,15 @@ public class TutorialController {
 		if (tutorialService.getAll().size() == 0) {
 			List<Triplet<String, String, String>> triplets = new ArrayList<>();
 			triplets.add(new Triplet<String, String, String>("Iniciar sesión en AprendeArabe",
-					"Aprende a acceder a la aplicación AprendeArabe", "mIk5oCKIuzU"));
+					"Aprende a acceder a la aplicación AprendeArabe", "mrMra9GbeQo"));
 			triplets.add(new Triplet<String, String, String>("Registrarse en AprendeArabe",
-					"Aprende a acceder a la aplicación AprendeArabe", "V4jq-E2e4Oc"));
+					"Aprende a acceder a la aplicación AprendeArabe", "axtDE20_rIk"));
 			triplets.add(new Triplet<String, String, String>("Realizar una lección en AprendeArabe",
-					"Aprende a realizar una lección en la aplicación AprendeArabe", "8vRJ7-Hu8RA"));
+					"Aprende a realizar una lección en la aplicación AprendeArabe", "JroywG1qTZs"));
+			triplets.add(new Triplet<String, String, String>("Valorar una lección en AprendeArabe",
+					"Aprende a valorar una lección en la aplicación AprendeArabe", "Yz-VIDk0uqU"));
 			triplets.add(new Triplet<String, String, String>("Realizar un test en AprendeArabe",
-					"Aprende a realizar un test en la aplicación AprendeArabe", "-SG9Dj7D0Us"));
+					"Aprende a realizar un test en la aplicación AprendeArabe", "gNIKr-Iabu8"));
 			for (Triplet<String, String, String> triplet : triplets) {
 				Tutorial tutorial = new Tutorial(triplet.getValue0(), triplet.getValue1(), triplet.getValue2(), "");
 				tutorialService.save(tutorial);

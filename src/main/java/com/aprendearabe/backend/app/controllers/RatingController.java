@@ -1,6 +1,7 @@
 package com.aprendearabe.backend.app.controllers;
 
 import java.io.IOException;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aprendearabe.backend.app.controllers.requests.RatingRequest;
 import com.aprendearabe.backend.app.models.entities.Lesson;
 import com.aprendearabe.backend.app.models.entities.Rating;
 import com.aprendearabe.backend.app.models.entities.User;
@@ -122,9 +124,11 @@ public class RatingController {
 	}
 
 	@PostMapping("")
-	public ResponseEntity<String> createRating(@RequestParam Integer score, @RequestParam Long lessonId,
-			@RequestParam Long userId) throws IOException {
+	public ResponseEntity<String> createRating(@RequestBody RatingRequest ratingRequest) throws IOException {
 		Rating ratingAdded = null;
+		Integer score = ratingRequest.getScore();
+		Long lessonId = ratingRequest.getLessonId();
+		Long userId = ratingRequest.getUserId();
 		try {
 			if (ratingService.getByLessonIdAndUserId(lessonId, userId)==null) {
 				Lesson lesson = lessonService.getById(lessonId);
